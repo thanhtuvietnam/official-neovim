@@ -106,7 +106,7 @@ return {
         },
         window = { margin = { vertical = 0, horizontal = 1 } },
         hide = {
-          cursorline = true,
+          cursorline = false,
         },
         render = function(props)
           local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":t")
@@ -173,6 +173,146 @@ return {
 
       logo = string.rep("\n", 8) .. logo .. "\n\n"
       opts.config.header = vim.split(logo, "\n")
+    end,
+  },
+  --cursorline
+  {
+    "yamatsum/nvim-cursorline",
+    -- enabled = false,
+    opts = {
+      cursorword = {
+        enable = true,
+        min_length = 3,
+        hl = { underline = true },
+      },
+      cursorline = {
+        enable = true,
+      },
+    },
+  },
+  -- Visually display indent levels
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    -- enabled = false,
+    dependencies = {
+      "nmac427/guess-indent.nvim",
+      "HiPhish/rainbow-delimiters.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+
+    main = "ibl",
+    event = "LazyFile",
+    opts = function()
+      LazyVim.toggle.map("<leader>ue", {
+        name = "Indention Guides",
+        get = function()
+          return require("ibl.config").get_config(0).enabled
+        end,
+        set = function(state)
+          require("ibl").setup_buffer(0, { enabled = state })
+        end,
+      })
+      local highlight = {
+        "RainbowRed",
+        "RainbowYellow",
+        "RainbowBlue",
+        "RainbowOrange",
+        "RainbowGreen",
+        "RainbowViolet",
+        "RainbowCyan",
+        "CursorColumn",
+        "Whitespace",
+      }
+
+      local hooks = require("ibl.hooks")
+
+      -- Tạo nhóm highlight
+      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+      end)
+      return {
+        indent = {
+          -- See more characters at :h ibl.config.indent.char
+          char = "│", -- ▏│
+          tab_char = "│",
+          -- char = "┊",
+          -- tab_char = "┊",
+          smart_indent_cap = true,
+          -- highlight = highlight,
+          -- char = "",
+        },
+        whitespace = {
+          remove_blankline_trail = false,
+          -- highlight = highlight,
+        },
+
+        scope = { show_exact_scope = true, highlight = highlight, show_start = true, show_end = true, enabled = true },
+        exclude = {
+          filetypes = {
+            "alpha",
+            "checkhealth",
+            "dashboard",
+            "git",
+            "gitcommit",
+            "help",
+            "lazy",
+            "lazyterm",
+            "lspinfo",
+            "man",
+            "mason",
+            "neo-tree",
+            "notify",
+            "Outline",
+            "TelescopePrompt",
+            "TelescopeResults",
+            "terminal",
+            "toggleterm",
+            "Trouble",
+          },
+        },
+      }
+    end,
+  },
+  -- Visualize and operate on indent scope
+  {
+    "echasnovski/mini.indentscope",
+    event = "LazyFile",
+    opts = function(_, opts)
+      opts.symbol = "│" -- ▏│
+      opts.options = { try_as_border = false }
+      opts.draw = {
+        delay = 0,
+        animation = require("mini.indentscope").gen_animation.none(),
+      }
+    end,
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "alpha",
+          "dashboard",
+          "fzf",
+          "help",
+          "lazy",
+          "lazyterm",
+          "man",
+          "mason",
+          "neo-tree",
+          "notify",
+          "Outline",
+          "toggleterm",
+          "Trouble",
+          "trouble",
+        },
+        callback = function()
+          vim.b["miniindentscope_disable"] = true
+        end,
+      })
     end,
   },
 }

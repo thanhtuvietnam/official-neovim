@@ -65,6 +65,20 @@ keymap.set("n", "<leader>i", function()
   require("craftzdog.lsp").toggleInlayHints()
 end)
 
+-- Open compiler
+vim.api.nvim_set_keymap("n", "<F6>", "<cmd>CompilerOpen<cr>", { noremap = true, silent = true })
+
+-- Redo last selected option
+vim.api.nvim_set_keymap(
+  "n",
+  "<F18>", --Shift F6
+  "<cmd>CompilerStop<cr>" -- (Optional, to dispose all tasks before redo)
+    .. "<cmd>CompilerRedo<cr>",
+  { noremap = true, silent = true }
+)
+
+-- Toggle compiler results
+vim.api.nvim_set_keymap("n", "<F7>", "<cmd>CompilerToggleResults<cr>", { noremap = true, silent = true })
 --toggleterm
 
 vim.api.nvim_set_keymap("n", "<leader>1", ":ToggleTerm 1<CR>", { noremap = true, silent = true })
