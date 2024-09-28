@@ -6,7 +6,6 @@ vim.g.trouble_lualine = true
 ---
 local opt = vim.opt
 opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
-
 opt.encoding = "utf-8"
 opt.fileencoding = "utf-8"
 opt.number = true
@@ -43,7 +42,7 @@ vim.cmd([[let &t_Cs = "\e[4:3m"]])
 vim.cmd([[let &t_Ce = "\e[4:0m"]])
 vim.cmd([[  
   autocmd TermOpen * setlocal winblend=20  
-  autocmd TermOpen * setlocal winhighlight=Normal:NormalNC  
+  " autocmd TermOpen * setlocal winhighlight=Normal:NormalNC  
 ]])
 -- Add asterisks in block comments
 vim.opt.formatoptions:append({ "r" })
